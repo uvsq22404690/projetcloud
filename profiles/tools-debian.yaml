@@ -1,0 +1,17 @@
+﻿id: tools-debian
+os:
+  distro: debian
+  version: "12"
+packages:
+  - curl
+  - wget
+  - iputils-ping
+  - net-tools
+app:
+  containerPort: 80
+network:
+  defaultDenyIngress: true
+  allowIngress:
+    - from: ingress-controller
+      protocol: TCP
+      port: 80
