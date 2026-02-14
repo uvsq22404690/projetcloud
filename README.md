@@ -239,4 +239,26 @@ Décrire le pod en cas d'erreur:
 kubectl describe pod -n web-debian-ns -l app=web-debian
 ```
 
+---
 
+## Exécution automatique (script PowerShell)
+
+Le script `scripts/run.ps1` permet d'automatiser toutes les étapes :
+
+- Génération des fichiers
+- Build de l'image Docker
+- Push vers DockerHub
+- Déploiement Kubernetes
+
+Exemple :
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\scripts\run.ps1 -Profile .\profiles\web-debian.yaml -DockerUser readnamane
+```
+
+Autre profil :
+
+```powershell
+.\scripts\run.ps1 -Profile .\profiles\tools-debian.yaml -DockerUser readnamane
+```
