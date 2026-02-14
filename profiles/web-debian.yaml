@@ -1,0 +1,16 @@
+﻿id: web-debian
+os:
+  distro: debian
+  version: "12"
+packages:
+  - nginx
+  - curl
+  - wget
+app:
+  containerPort: 80
+network:
+  defaultDenyIngress: true
+  allowIngress:
+    - from: ingress-controller
+      protocol: TCP
+      port: 80

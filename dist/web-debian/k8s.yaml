@@ -1,0 +1,75 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: web-debian-ns
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-debian
+  namespace: web-debian-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web-debian
+  template:
+    metadata:
+      labels:
+        app: web-debian
+    spec:
+      containers:
+        - name: web-debian
+          image: readnamane/web-debian:1bf2b2b5
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-debian
+  namespace: web-debian-ns
+spec:
+  selector:
+    app: web-debian
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: web-debian-default-deny-ingress
+  namespace: web-debian-ns
+spec:
+  podSelector:
+    matchLabels:
+      app: web-debian
+  policyTypes:
+    - Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: web-debian-allow-from-ingress
+  namespace: web-debian-ns
+spec:
+  podSelector:
+    matchLabels:
+      app: web-debian
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ingress-nginx
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: ingress-nginx
+      ports:
+      - protocol: TCP
+        port: 80
+
